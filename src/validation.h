@@ -1,0 +1,33 @@
+#ifndef COMPUTER_CLUB_VALIDATION_H
+#define COMPUTER_CLUB_VALIDATION_H
+
+#include <string>
+
+class validation {
+public:
+    explicit validation(std::string);
+
+    uint16_t get_number_of_tables();
+    std::pair<std::string, std::string> get_start_time();
+    std::pair<std::string, std::string> get_end_time();
+    uint32_t get_price();
+
+private:
+    std::string file;
+
+    uint16_t number_of_tables;
+    std::pair<std::string, std::string> start_time;
+    std::pair<std::string, std::string> end_time;
+    uint32_t price;
+
+    std::string current_str;
+    std::pair<std::string, std::string> last_time;
+
+    void start_val();
+    void error_msg();
+    static bool uint_validation(const std::string&);
+    void time_validation();
+};
+
+
+#endif  //COMPUTER_CLUB_VALIDATION_H
