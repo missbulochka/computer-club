@@ -4,6 +4,10 @@
 #include <utility>
 #include <cctype>
 #include <fstream>
+#include <vector>
+#include <iterator>
+#include <sstream>
+#include <algorithm>
 
 validation::validation(std::string rec_file)
     : file(std::move(rec_file))
@@ -16,28 +20,28 @@ validation::validation(std::string rec_file)
     start_val();
 }
 
-void validation::error_msg() {
-    std::cout << "Error in line:\n" << current_str;
+void validation::error_msg(size_t error_line) {
+    std::cout << "Error in line: " << error_line << '\n' << current_str;
     exit(1);
 }
 
-bool validation::uint_validation(const std::string& str) {
-    for (char j : str) {
-        if (std::isdigit(j)) {
-            continue;
-        }
-        else {
-            return false;
-        }
-    }
-    return true;
+bool validation::only_digit(const std::string& str) {
+    const auto find = std::find_if(std::cbegin(str), std::cend(str),
+                                   [](const auto ch) { return !std::isdigit(ch); });
+    return find == std::cend(str);
+}
+
+bool validation::only_alnum(const std::string& str) {
+    const auto find = std::find_if(std::cbegin(str), std::cend(str),
+                                   [](const auto ch) { return !std::isalnum(ch); });
+    return find == std::cend(str);
 }
 
 bool validation::time_validation(const std::pair<std::string, std::string>& block) {
-    if (!this->uint_validation(block.first) || std::stol(block.first) >= 24) {
+    if (!this->only_digit(block.first) || std::stol(block.first) >= 24) {
         return false;
     }
-    if (!this->uint_validation(block.second) || std::stol(block.second) >= 60) {
+    if (!this->only_digit(block.second) || std::stol(block.second) >= 60) {
         return false;
     }
     if (block.first.size() < 2 || block.second.size() < 2) {
@@ -76,11 +80,16 @@ void validation::start_val() {
     }
 
     for (size_t line_num = 1; getline(rep_file, current_str); ++line_num) {
+        if (current_str.empty()) {
+            error_msg(line_num);
+        }
+
         switch (line_num) {
             case (1):
-                if (uint_validation(current_str)) {
-                    number_of_tables = std::stol(current_str, nullptr, 0);
+                if (!only_digit(current_str)) {
+                    error_msg(line_num);
                 }
+                number_of_tables = std::stol(current_str, nullptr, 0);
                 break;
             case (2): {
                 auto times = parse_time(current_str, ' ');
@@ -92,16 +101,51 @@ void validation::start_val() {
                     end_time = block_2;
                 }
                 else {
-                    error_msg();
+                    error_msg(line_num);
                 }
                 break;
             }
             case (3):
-                if (uint_validation(current_str)) {
-                    price = std::stol(current_str, nullptr, 0);
+                if (!only_digit(current_str)) {
+                    error_msg(line_num);
                 }
+                price = std::stol(current_str, nullptr, 0);
                 break;
-            default: std::cout << "def";
+            default:
+                std::istringstream p(current_str);
+                std::vector<std::string> event(std::istream_iterator<std::string>{p},
+                                               std::istream_iterator<std::string>());
+                if (event.size() < 3) {
+                    error_msg(line_num);
+                }
+
+                auto time = parse_time(event[0], ':');
+                if (!time_validation(time)) {
+                    error_msg(line_num);
+                }
+                if (line_num == 4) {
+                    last_time = time;
+                }
+                else {
+                    if (!time_is_less_then(last_time, time)) {
+                        error_msg(line_num);
+                    }
+                    last_time = time;
+                }
+
+                if (!only_digit(event[1]) || std::stol(event[1]) > 4) {
+                    error_msg(line_num);
+                }
+
+                if (!only_alnum(event[2])) {
+                    error_msg(line_num);
+                }
+
+                if (event.size() == 4) {
+                    if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables) {
+                        error_msg(line_num);
+                    }
+                }
         }
     }
 }
