@@ -26,18 +26,16 @@ void validation::error_msg(size_t error_line) {
 }
 
 bool validation::only_digit(const std::string& str) {
-    const auto find = std::find_if(std::cbegin(str), std::cend(str),
-                                   [](const auto ch) { return !std::isdigit(ch); });
+    const auto find = std::find_if(std::cbegin(str), std::cend(str), [](const auto ch) { return !std::isdigit(ch); });
     return find == std::cend(str);
 }
 
 bool validation::only_alnum(const std::string& str) {
-    const auto find = std::find_if(std::cbegin(str), std::cend(str),
-                                   [](const auto ch) { return !std::isalnum(ch); });
+    const auto find = std::find_if(std::cbegin(str), std::cend(str), [](const auto ch) { return !std::isalnum(ch); });
     return find == std::cend(str);
 }
 
-bool validation::time_validation(const std::pair<std::string, std::string>& block) {
+bool validation::only_time(const std::pair<std::string, std::string>& block) {
     if (!this->only_digit(block.first) || std::stol(block.first) >= 24) {
         return false;
     }
@@ -96,7 +94,7 @@ void validation::start_val() {
                 auto block_1 = parse_time(times.first, ':');
                 auto block_2 = parse_time(times.second, ':');
 
-                if (time_validation(block_1) && time_validation(block_2) && time_is_less_then(block_1, block_2)) {
+                if (only_time(block_1) && only_time(block_2) && time_is_less_then(block_1, block_2)) {
                     start_time = block_1;
                     end_time = block_2;
                 }
@@ -120,7 +118,7 @@ void validation::start_val() {
                 }
 
                 auto time = parse_time(event[0], ':');
-                if (!time_validation(time)) {
+                if (!only_time(time)) {
                     error_msg(line_num);
                 }
                 if (line_num == 4) {
