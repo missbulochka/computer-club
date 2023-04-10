@@ -50,8 +50,8 @@ bool validation::only_time(const std::pair<std::string, std::string>& block) {
 
 std::pair<std::string, std::string> validation::parse_time(const std::string& str, char sep) {
     auto sep_pos = str.find(sep);
-    std::string block_1 = str.substr(0, sep_pos);
-    std::string block_2 = str.substr(sep_pos + 1);
+    auto block_1 = str.substr(0, sep_pos);
+    auto block_2 = str.substr(sep_pos + 1);
 
     return std::make_pair(block_1, block_2);
 }
@@ -61,12 +61,10 @@ bool validation::time_is_less_then(const std::pair<std::string, std::string>& ti
     if (std::stol(time_1.first) > std::stol(time_2.first)) {
         return false;
     }
-    else if (std::stol(time_1.first) < std::stol(time_2.first)) {
+    if (std::stol(time_1.first) < std::stol(time_2.first)) {
         return true;
     }
-    else {
-        return (std::stol(time_1.second) < std::stol(time_2.second));
-    }
+    return (std::stol(time_1.second) < std::stol(time_2.second));
 }
 
 void validation::start_val() {
