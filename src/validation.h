@@ -26,7 +26,9 @@ private:
     void start_val();
     void error_msg();
     static bool uint_validation(const std::string&);
-    void time_validation();
+    bool time_validation(const std::pair<std::string, std::string>&);
+    static bool time_is_less_then(const std::pair<std::string, std::string>&, const std::pair<std::string, std::string>&);
+    static std::pair<std::string, std::string> parse_time(const std::string&, char);
 };
 
 

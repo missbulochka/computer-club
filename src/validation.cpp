@@ -30,26 +30,41 @@ bool validation::uint_validation(const std::string& str) {
             return false;
         }
     }
-
     return true;
 }
 
-void validation::time_validation() {
-    std::string block_1 = current_str.substr(0, current_str.find(' '));
-    std::string block_2 = current_str.substr(current_str.find(' ') + 1);
+bool validation::time_validation(const std::pair<std::string, std::string>& block) {
+    if (!this->uint_validation(block.first) || std::stol(block.first) >= 24) {
+        return false;
+    }
+    if (!this->uint_validation(block.second) || std::stol(block.second) >= 60) {
+        return false;
+    }
+    if (block.first.size() < 2 || block.second.size() < 2) {
+        return false;
+    }
+    return true;
+}
 
-    auto check_time = [this](std::string& block) {
-        size_t pos = block.find(':');
-        if (!this->uint_validation(block.substr(0, pos)) || std::stol(block.substr(0, pos)) >= 24)
-            error_msg();
-        if (!this->uint_validation(block.substr(pos + 1)) || std::stol(block.substr(pos + 1)) >= 60) {
-            error_msg();
-        }
-        return std::make_pair(block.substr(0, pos), block.substr(pos + 1));
-    };
+std::pair<std::string, std::string> validation::parse_time(const std::string& str, char sep) {
+    auto sep_pos = str.find(sep);
+    std::string block_1 = str.substr(0, sep_pos);
+    std::string block_2 = str.substr(sep_pos + 1);
 
-    start_time = check_time(block_1);
-    end_time = check_time(block_2);
+    return std::make_pair(block_1, block_2);
+}
+
+bool validation::time_is_less_then(const std::pair<std::string, std::string>& time_1,
+                                   const std::pair<std::string, std::string>& time_2) {
+    if (std::stol(time_1.first) > std::stol(time_2.first)) {
+        return false;
+    }
+    else if (std::stol(time_1.first) < std::stol(time_2.first)) {
+        return true;
+    }
+    else {
+        return (std::stol(time_1.second) < std::stol(time_2.second));
+    }
 }
 
 void validation::start_val() {
@@ -67,13 +82,26 @@ void validation::start_val() {
                     number_of_tables = std::stol(current_str, nullptr, 0);
                 }
                 break;
-            case (2): time_validation(); break;
+            case (2): {
+                auto times = parse_time(current_str, ' ');
+                auto block_1 = parse_time(times.first, ':');
+                auto block_2 = parse_time(times.second, ':');
+
+                if (time_validation(block_1) && time_validation(block_2) && time_is_less_then(block_1, block_2)) {
+                    start_time = block_1;
+                    end_time = block_2;
+                }
+                else {
+                    error_msg();
+                }
+                break;
+            }
             case (3):
                 if (uint_validation(current_str)) {
                     price = std::stol(current_str, nullptr, 0);
                 }
                 break;
-            default:
+            default: std::cout << "def";
         }
     }
 }
