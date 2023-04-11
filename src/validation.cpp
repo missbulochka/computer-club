@@ -107,10 +107,10 @@ bool validation::only_alnum(const std::string& str) {
 }
 
 bool validation::only_time(const hh_mm& block) {
-    if (!this->only_digit(block.hours) || std::stol(block.hours) >= 24) {
+    if (!only_digit(block.hours) || std::stol(block.hours) >= 24) {
         return false;
     }
-    if (!this->only_digit(block.minutes) || std::stol(block.minutes) >= 60) {
+    if (!only_digit(block.minutes) || std::stol(block.minutes) >= 60) {
         return false;
     }
     if (block.hours.size() != 2 || block.minutes.size() != 2) {
