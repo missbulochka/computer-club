@@ -48,7 +48,7 @@ void validation::start_val() {
 }
 
 void validation::table_or_price_val() {
-    if (!only_digit(current_str)) {
+    if (!only_digit(current_str) || std::stol(current_str) == 0) {
         throw std::runtime_error("1");
     }
     number_of_tables = std::stol(current_str, nullptr, 0);
@@ -85,17 +85,14 @@ void validation::event_val(size_t& line_num) {
             throw std::runtime_error("1");
         }
 
-        if (line_num > 4) {
-            if (!time_is_less_then(last_time, time)) {
-                throw std::runtime_error("1");
-            }
+        if (line_num > 4 && !time_is_less_then(last_time, time)) {
+            throw std::runtime_error("1");
         }
         last_time = time;
     }
-    if (event.size() == 4) {
-        if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) != 0) {
-            throw std::runtime_error("1");
-        }
+    if (event.size() == 4
+        && (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) == 0)) {
+        throw std::runtime_error("1");
     }
 }
 
