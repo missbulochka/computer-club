@@ -1,4 +1,3 @@
-#include <string>
 #include "types.h"
 
 hh_mm parse_time(const std::string& str, char sep) {

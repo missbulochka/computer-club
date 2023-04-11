@@ -8,7 +8,6 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
-#include "funcs_for_time.h"
 
 validation::validation(std::string rec_file)
     : file(std::move(rec_file))

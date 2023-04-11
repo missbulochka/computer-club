@@ -1,8 +1,7 @@
 #ifndef COMPUTER_CLUB_VALIDATION_H
 #define COMPUTER_CLUB_VALIDATION_H
 
-#include <string>
-#include "types.h"
+#include "funcs_for_time.h"
 
 class validation {
 public:
