@@ -119,16 +119,6 @@ bool validation::only_time(const hh_mm& block) {
     return true;
 }
 
-bool validation::time_is_less_then(const hh_mm& time_1, const hh_mm& time_2) {
-    if (std::stol(time_1.hours) > std::stol(time_2.hours)) {
-        return false;
-    }
-    if (std::stol(time_1.hours) < std::stol(time_2.hours)) {
-        return true;
-    }
-    return (std::stol(time_1.minutes) < std::stol(time_2.minutes));
-}
-
 uint16_t validation::get_number_of_tables() {
     return number_of_tables;
 }

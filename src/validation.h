@@ -27,7 +27,6 @@ private:
     static bool only_digit(const std::string&);
     static bool only_alnum(const std::string&);
     bool only_time(const hh_mm&);
-    static bool time_is_less_then(const hh_mm&, const hh_mm&);
 
     void table_or_price_val();
     void time_val();
