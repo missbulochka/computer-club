@@ -20,9 +20,83 @@ validation::validation(std::string rec_file)
     start_val();
 }
 
-void validation::error_msg(size_t error_line) {
-    std::cout << "Error in line: " << error_line << '\n' << current_str;
-    exit(1);
+void validation::start_val() {
+    std::ifstream rep_file(file);
+    if (!rep_file.is_open()) {
+        std::cout << "Unable to open the report file";
+        exit(1);
+    }
+
+    for (size_t line_num = 1; getline(rep_file, current_str); ++line_num) {
+        try {
+            if (current_str.empty()) {
+                throw std::runtime_error("1");
+            }
+
+            switch (line_num) {
+                case (1): table_or_price_val(); break;
+                case (2): time_val(); break;
+                case (3): table_or_price_val(); break;
+                default: event_val(line_num);
+            }
+        }
+        catch (...) {
+            std::cout << "Error in line: " << line_num << '\n' << current_str;
+            exit(1);
+        }
+    }
+}
+
+void validation::table_or_price_val() {
+    if (!only_digit(current_str)) {
+        throw std::runtime_error("1");
+    }
+    number_of_tables = std::stol(current_str, nullptr, 0);
+}
+
+void validation::time_val() {
+    auto times = parse_time(current_str, ' ');
+    auto block_1 = parse_time(times.hours, ':');
+    auto block_2 = parse_time(times.minutes, ':');
+
+    if (only_time(block_1) && only_time(block_2) && time_is_less_then(block_1, block_2)) {
+        start_time = block_1;
+        end_time = block_2;
+    }
+    else {
+        throw std::runtime_error("1");
+    }
+}
+
+void validation::event_val(size_t& line_num) {
+    std::istringstream p(current_str);
+    std::vector<std::string> event(std::istream_iterator<std::string>{p}, std::istream_iterator<std::string>());
+
+    if (event.size() < 3 || event.size() > 4) {
+        throw std::runtime_error("1");
+    }
+    {
+        auto time = parse_time(event[0], ':');
+        if (!only_time(time) || !only_digit(event[1]) || !only_alnum(event[2])) {
+            throw std::runtime_error("1");
+        }
+
+        if (std::stol(event[1]) > 4 || std::stol(event[1]) == 0) {
+            throw std::runtime_error("1");
+        }
+
+        if (line_num > 4) {
+            if (!time_is_less_then(last_time, time)) {
+                throw std::runtime_error("1");
+            }
+        }
+        last_time = time;
+    }
+    if (event.size() == 4) {
+        if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) != 0) {
+            throw std::runtime_error("1");
+        }
+    }
 }
 
 bool validation::only_digit(const std::string& str) {
@@ -42,7 +116,7 @@ bool validation::only_time(const hh_mm& block) {
     if (!this->only_digit(block.minutes) || std::stol(block.minutes) >= 60) {
         return false;
     }
-    if (block.hours.size() < 2 || block.minutes.size() < 2) {
+    if (block.hours.size() != 2 || block.minutes.size() != 2) {
         return false;
     }
     return true;
@@ -56,85 +130,6 @@ bool validation::time_is_less_then(const hh_mm& time_1, const hh_mm& time_2) {
         return true;
     }
     return (std::stol(time_1.minutes) < std::stol(time_2.minutes));
-}
-
-void validation::start_val() {
-    std::ifstream rep_file(file);
-
-    if (!rep_file.is_open()) {
-        std::cout << "Unable to open the report file";
-        exit(1);
-    }
-
-    for (size_t line_num = 1; getline(rep_file, current_str); ++line_num) {
-        if (current_str.empty()) {
-            error_msg(line_num);
-        }
-
-        switch (line_num) {
-            case (1):
-                if (!only_digit(current_str)) {
-                    error_msg(line_num);
-                }
-                number_of_tables = std::stol(current_str, nullptr, 0);
-                break;
-            case (2): {
-                auto times = parse_time(current_str, ' ');
-                auto block_1 = parse_time(times.hours, ':');
-                auto block_2 = parse_time(times.minutes, ':');
-
-                if (only_time(block_1) && only_time(block_2) && time_is_less_then(block_1, block_2)) {
-                    start_time = block_1;
-                    end_time = block_2;
-                }
-                else {
-                    error_msg(line_num);
-                }
-                break;
-            }
-            case (3):
-                if (!only_digit(current_str)) {
-                    error_msg(line_num);
-                }
-                price = std::stol(current_str, nullptr, 0);
-                break;
-            default:
-                std::istringstream p(current_str);
-                std::vector<std::string> event(std::istream_iterator<std::string>{p},
-                                               std::istream_iterator<std::string>());
-                if (event.size() < 3) {
-                    error_msg(line_num);
-                }
-
-                auto time = parse_time(event[0], ':');
-                if (!only_time(time)) {
-                    error_msg(line_num);
-                }
-                if (line_num == 4) {
-                    last_time = time;
-                }
-                else {
-                    if (!time_is_less_then(last_time, time)) {
-                        error_msg(line_num);
-                    }
-                    last_time = time;
-                }
-
-                if (!only_digit(event[1]) || std::stol(event[1]) > 4) {
-                    error_msg(line_num);
-                }
-
-                if (!only_alnum(event[2])) {
-                    error_msg(line_num);
-                }
-
-                if (event.size() == 4) {
-                    if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables) {
-                        error_msg(line_num);
-                    }
-                }
-        }
-    }
 }
 
 uint16_t validation::get_number_of_tables() {
