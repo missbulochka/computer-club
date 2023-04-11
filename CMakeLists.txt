@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(source_list
         src/main.cpp
-        src/validation.cpp src/validation.h)
+        src/validation.cpp src/validation.h
+        src/types.h
+        src/funcs_for_time.h)
 
 add_executable(${PROJECT_NAME} ${source_list})

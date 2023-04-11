@@ -8,6 +8,7 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
+#include "funcs_for_time.h"
 
 validation::validation(std::string rec_file)
     : file(std::move(rec_file))
@@ -35,36 +36,27 @@ bool validation::only_alnum(const std::string& str) {
     return find == std::cend(str);
 }
 
-bool validation::only_time(const std::pair<std::string, std::string>& block) {
-    if (!this->only_digit(block.first) || std::stol(block.first) >= 24) {
+bool validation::only_time(const hh_mm& block) {
+    if (!this->only_digit(block.hours) || std::stol(block.hours) >= 24) {
         return false;
     }
-    if (!this->only_digit(block.second) || std::stol(block.second) >= 60) {
+    if (!this->only_digit(block.minutes) || std::stol(block.minutes) >= 60) {
         return false;
     }
-    if (block.first.size() < 2 || block.second.size() < 2) {
+    if (block.hours.size() < 2 || block.minutes.size() < 2) {
         return false;
     }
     return true;
 }
 
-std::pair<std::string, std::string> validation::parse_time(const std::string& str, char sep) {
-    auto sep_pos = str.find(sep);
-    auto block_1 = str.substr(0, sep_pos);
-    auto block_2 = str.substr(sep_pos + 1);
-
-    return std::make_pair(block_1, block_2);
-}
-
-bool validation::time_is_less_then(const std::pair<std::string, std::string>& time_1,
-                                   const std::pair<std::string, std::string>& time_2) {
-    if (std::stol(time_1.first) > std::stol(time_2.first)) {
+bool validation::time_is_less_then(const hh_mm& time_1, const hh_mm& time_2) {
+    if (std::stol(time_1.hours) > std::stol(time_2.hours)) {
         return false;
     }
-    if (std::stol(time_1.first) < std::stol(time_2.first)) {
+    if (std::stol(time_1.hours) < std::stol(time_2.hours)) {
         return true;
     }
-    return (std::stol(time_1.second) < std::stol(time_2.second));
+    return (std::stol(time_1.minutes) < std::stol(time_2.minutes));
 }
 
 void validation::start_val() {
@@ -89,8 +81,8 @@ void validation::start_val() {
                 break;
             case (2): {
                 auto times = parse_time(current_str, ' ');
-                auto block_1 = parse_time(times.first, ':');
-                auto block_2 = parse_time(times.second, ':');
+                auto block_1 = parse_time(times.hours, ':');
+                auto block_2 = parse_time(times.minutes, ':');
 
                 if (only_time(block_1) && only_time(block_2) && time_is_less_then(block_1, block_2)) {
                     start_time = block_1;
@@ -150,11 +142,11 @@ uint16_t validation::get_number_of_tables() {
     return number_of_tables;
 }
 
-std::pair<std::string, std::string> validation::get_start_time() {
+hh_mm validation::get_start_time() {
     return start_time;
 }
 
-std::pair<std::string, std::string> validation::get_end_time() {
+hh_mm validation::get_end_time() {
     return end_time;
 }
 
