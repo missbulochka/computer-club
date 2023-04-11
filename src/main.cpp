@@ -5,7 +5,6 @@
 #include <vector>
 #include "validation.h"
 
-
 void id_analysis(uint8_t id) {}
 
 int main() {
