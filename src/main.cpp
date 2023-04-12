@@ -37,7 +37,7 @@ int main() {
         std::istringstream p(current_str);
         std::vector<std::string> event(std::istream_iterator<std::string>{p}, std::istream_iterator<std::string>());
 
-        id_analysis(std::stoi(event[2]));
+        id_analysis(std::stoi(event[1]));
     }
 
     return 0;
