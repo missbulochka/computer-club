@@ -64,8 +64,8 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
 
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
     const auto empty_table = std::find_if(std::cbegin(work_info.who_sits),
-                                           std::cend(work_info.who_sits),
-                                           [](const std::string& name) { return name.empty(); });
+                                          std::cend(work_info.who_sits),
+                                          [](const std::string& name) { return name.empty(); });
 
     if (empty_table != std::cend(work_info.who_sits)) {
         id13(time, "ICanWaitNoLonger!");
@@ -90,4 +90,26 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
     size_t index = std::distance(std::cbegin(work_info.who_sits), table);
     work_info.who_sits[index] = "";
     id12(work_info, time, index);
+}
+
+void expel_clients_from_club(club_info& work_info) {
+    const auto isn_empty = [](const auto queue) {
+        auto res =
+          std::find_if(std::cbegin(queue), std::cend(queue), [](const std::string& name) { return name.empty(); });
+        return res != std::cend(queue);
+    };
+
+    if (isn_empty(work_info.queue_clients)) {
+        auto time = work_info.end_time;
+        for (size_t i = 0; i < work_info.queue_clients.size(); ++i) {
+            id11(work_info.end_time, work_info.queue_clients[0]);
+            work_info.queue_clients.erase(std::cbegin(work_info.queue_clients));
+        }
+    }
+    if (isn_empty(work_info.who_sits)) {
+        for (size_t i = 0; i < work_info.who_sits.size(); ++i) {
+            id11(work_info.end_time, work_info.who_sits[i]);
+            work_info.who_sits.erase(std::cbegin(work_info.who_sits));
+        }
+    }
 }

@@ -44,6 +44,7 @@ int main() {
         id_analysis(work_info, parse_time(event[0], ':'), std::stoi(event[1]), event[2], std::stoi(event[3]));
     }
 
+    expel_clients_from_club(work_info);
     print_time(work_info.end_time, true);
 
     return 0;

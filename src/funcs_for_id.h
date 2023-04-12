@@ -33,5 +33,6 @@ void id1(club_info&, hh_mm&, std::string&);
 void id2(club_info&, hh_mm&, std::string&, uint16_t);
 void id3(club_info&, hh_mm&, std::string&);
 void id4(club_info&, hh_mm&, std::string&);
+void expel_clients_from_club(club_info&);
 
 #endif  //COMPUTER_CLUB_FUNCS_FOR_ID_H
