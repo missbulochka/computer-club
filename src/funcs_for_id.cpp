@@ -62,11 +62,11 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
 }
 
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
-    const auto empty_table = [](const auto queue) {
-        return std::find(std::cbegin(queue), std::cend(queue), "") != std::cend(queue);
-    };
+    const auto empty_table = std::find_if(std::cbegin(work_info.who_sits),
+                                           std::cend(work_info.who_sits),
+                                           [](const std::string& name) { return name.empty(); });
 
-    if (empty_table(work_info.queue_clients)) {
+    if (empty_table != std::cend(work_info.who_sits)) {
         id13(time, "ICanWaitNoLonger");
     }
     if (work_info.queue_clients.size() > work_info.number_of_tables) {
