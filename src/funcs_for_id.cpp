@@ -19,7 +19,8 @@ void id1(club_info& work_info, hh_mm& time, std::string& name) {
         id13(time, "YouShallNotPass");
         return;
     }
-    if (!time_is_less_then(work_info.start_time, time) || !time_is_less_then(time, work_info.end_time)) {
+    if (!time_is_less_or_equal_then(work_info.start_time, time)
+        || !time_is_less_or_equal_then(time, work_info.end_time)) {
         id13(time, "NotOpenYet");
         return;
     }

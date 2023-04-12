@@ -59,7 +59,7 @@ void validation::time_val() {
     auto block_1 = parse_time(times.hours, ':');
     auto block_2 = parse_time(times.minutes, ':');
 
-    if (only_time(block_1) && only_time(block_2) && time_is_less_then(block_1, block_2)) {
+    if (only_time(block_1) && only_time(block_2) && time_is_less_or_equal_then(block_1, block_2)) {
         start_time = block_1;
         end_time = block_2;
     }
@@ -85,7 +85,7 @@ void validation::event_val(size_t& line_num) {
             throw std::runtime_error("1");
         }
 
-        if (line_num > 4 && !time_is_less_then(last_time, time)) {
+        if (line_num > 4 && !time_is_less_or_equal_then(last_time, time)) {
             throw std::runtime_error("1");
         }
         last_time = time;
@@ -95,8 +95,8 @@ void validation::event_val(size_t& line_num) {
             throw std::runtime_error("1");
         }
         if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) == 0) {
-                throw std::runtime_error("1");
-            }
+            throw std::runtime_error("1");
+        }
     }
 }
 
