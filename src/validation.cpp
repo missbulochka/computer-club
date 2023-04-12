@@ -90,9 +90,13 @@ void validation::event_val(size_t& line_num) {
         }
         last_time = time;
     }
-    if (event.size() == 4
-        && (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) == 0)) {
-        throw std::runtime_error("1");
+    if (event.size() == 4) {
+        if (std::stol(event[1]) != 2) {
+            throw std::runtime_error("1");
+        }
+        if (!only_digit(event[3]) || std::stol(event[3]) > number_of_tables || std::stol(event[3]) == 0) {
+                throw std::runtime_error("1");
+            }
     }
 }
 
