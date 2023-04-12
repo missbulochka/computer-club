@@ -27,10 +27,11 @@ struct club_info {
 };
 
 void id11(hh_mm&, const std::string&);
+void id12(club_info&, std::string&, size_t);
 void id13(hh_mm&, const std::string&);
 void id1(club_info&, hh_mm&, std::string&);
-void id2();
+void id2(club_info&, hh_mm&, std::string&, uint16_t);
 void id3(club_info&, hh_mm&, std::string&);
-void id4();
+void id4(club_info&, hh_mm&, std::string&);
 
 #endif  //COMPUTER_CLUB_FUNCS_FOR_ID_H

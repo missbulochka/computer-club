@@ -9,9 +9,9 @@
 void id_analysis(club_info& work_info, hh_mm time, uint8_t id, std::string& name, uint16_t table_num = 0) {
     switch (id) {
         case (1): id1(work_info, time, name); break;
-        case (2): id2(); break;
+        case (2): id2(work_info, time, name, table_num); break;
         case (3): id3(work_info, time, name); break;
-        case (4): id4(); break;
+        case (4): id4(work_info, time, name); break;
         default: std::cout << "something go wrong"; exit(1);
     }
 }
