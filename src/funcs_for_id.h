@@ -26,11 +26,12 @@ struct club_info {
     std::vector<hh_mm> occupancy_table;
 };
 
-void id11();
+bool find_some(std::vector<std::string>&, std::string&);
+void id11(hh_mm&, const std::string&);
 void id13(hh_mm&, const std::string&);
 void id1(club_info&, hh_mm&, std::string&);
 void id2();
-void id3(club_info&, hh_mm&);
+void id3(club_info&, hh_mm&, std::string&);
 void id4();
 
 #endif  //COMPUTER_CLUB_FUNCS_FOR_ID_H
