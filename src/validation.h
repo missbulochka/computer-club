@@ -8,8 +8,8 @@ public:
     explicit validation(std::string);
 
     uint16_t get_number_of_tables() const;
-    hh_mm get_start_time();
-    hh_mm get_end_time();
+    hh_mm get_start_time() const;
+    hh_mm get_end_time() const;
     uint32_t get_price() const;
 
 private:

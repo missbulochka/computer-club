@@ -123,11 +123,11 @@ uint16_t validation::get_number_of_tables() const {
     return number_of_tables;
 }
 
-hh_mm validation::get_start_time() {
+hh_mm validation::get_start_time() const {
     return start_time;
 }
 
-hh_mm validation::get_end_time() {
+hh_mm validation::get_end_time() const {
     return end_time;
 }
 
