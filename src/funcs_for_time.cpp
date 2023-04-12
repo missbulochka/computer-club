@@ -22,3 +22,10 @@ bool time_is_less_then(const hh_mm& time_1, const hh_mm& time_2) {
     }
     return (std::stol(time_1.minutes) < std::stol(time_2.minutes));
 }
+
+void print_time(const hh_mm& time, bool flag_ln = false) {
+    std::cout << time.hours << ':' << time.minutes;
+    if (flag_ln) {
+        std::cout << '\n';
+    }
+}
