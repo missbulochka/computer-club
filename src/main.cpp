@@ -6,7 +6,7 @@
 #include "validation.h"
 #include "funcs_for_id.h"
 
-void id_analysis(club_info& work_info, hh_mm time, uint8_t id, std::string& name, uint16_t table_num = 0) {
+void id_analysis(club_info& work_info, hh_mm time, uint8_t id, std::string& name, uint16_t table_num) {
     switch (id) {
         case (1): id1(work_info, time, name); break;
         case (2): id2(work_info, time, name, table_num); break;
@@ -35,9 +35,13 @@ int main() {
 
         std::istringstream p(work_info.current_str);
         std::vector<std::string> event(std::istream_iterator<std::string>{p}, std::istream_iterator<std::string>());
+        if (event.size() < 4) {
+            event.emplace_back("0");
+        }
+
 
         std::cout << work_info.current_str << '\n';
-        id_analysis(work_info, parse_time(event[0], ':'), std::stoi(event[1]), event[2]);
+        id_analysis(work_info, parse_time(event[0], ':'), std::stoi(event[1]), event[2], std::stoi(event[3]));
     }
 
     print_time(work_info.end_time, true);

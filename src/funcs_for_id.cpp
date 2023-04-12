@@ -7,11 +7,13 @@ void id11(hh_mm& time, const std::string& name) {
     std::cout << 11 << ' ' << name << '\n';
 }
 
-void id12(club_info& work_info, std::string& name, size_t index) {
+void id12(club_info& work_info, hh_mm& time, std::string& name, size_t index) {
     if (work_info.queue_clients.empty()) {
         return;
     }
 
+    print_time(time, false);
+    std::cout << 12 << ' ' << name << index + 1 << '\n';
     work_info.queue_clients.erase(work_info.queue_clients.cbegin());
     work_info.who_sits[index] = name;
 }
@@ -36,9 +38,28 @@ void id1(club_info& work_info, hh_mm& time, std::string& name) {
         id13(time, "NotOpenYet");
         return;
     }
+    work_info.queue_clients.push_back(name);
 }
 
-void id2() {}
+void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_num) {
+    const auto find_name = [name](const auto queue) { return std::find(std::cbegin(queue), std::cend(queue), name); };
+
+    if (find_name(work_info.who_sits) != std::cend(work_info.who_sits)) {
+        work_info.who_sits.erase(find_name(work_info.who_sits));
+    }
+    if (find_name(work_info.queue_clients) == std::cend(work_info.queue_clients)) {
+        id13(time, "ClientUnknown");
+        return;
+    }
+
+    if (!work_info.who_sits[table_num - 1].empty()) {
+        id13(time, "PlaceIsBusy");
+        work_info.queue_clients.push_back(name);
+        return;
+    }
+
+    work_info.who_sits[table_num - 1] = name;
+}
 
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
     const auto empty_table = [](const auto queue) {
@@ -67,5 +88,5 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
     auto table = std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name);
     size_t index = std::distance(std::cbegin(work_info.who_sits), table);
     work_info.who_sits[index] = "";
-    id12(work_info, name, index);
+    id12(work_info, time, name, index);
 }
