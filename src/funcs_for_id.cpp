@@ -28,6 +28,19 @@ void id1(club_info& work_info, hh_mm& time, std::string& name) {
 
 void id2() {}
 
-void id3() {}
+void id3(club_info& work_info, hh_mm& time) {
+    const auto empty_table = [](const auto queue) {
+        return std::find(std::cbegin(queue), std::cend(queue), "") != std::cend(queue);
+    };
+
+    std::cout << work_info.current_str << '\n';
+
+    if (empty_table(work_info.queue_clients)) {
+        id13(time, "ICanWaitNoLonger");
+    }
+    if (work_info.queue_clients.size() > work_info.number_of_tables) {
+        id11();
+    }
+}
 
 void id4() {}
