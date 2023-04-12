@@ -119,7 +119,7 @@ bool validation::only_time(const hh_mm& block) {
     return true;
 }
 
-uint16_t validation::get_number_of_tables() {
+uint16_t validation::get_number_of_tables() const {
     return number_of_tables;
 }
 
@@ -131,6 +131,6 @@ hh_mm validation::get_end_time() {
     return end_time;
 }
 
-uint32_t validation::get_price() {
+uint32_t validation::get_price() const {
     return price;
 }
