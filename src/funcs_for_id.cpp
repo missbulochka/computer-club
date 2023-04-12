@@ -2,11 +2,6 @@
 #include <algorithm>
 #include "funcs_for_id.h"
 
-bool find_some(std::vector<std::string>& collection, std::string& some) {
-    auto res = std::find(std::cbegin(collection), std::cend(collection), some);
-    return res != std::cend(collection);
-}
-
 void id11(hh_mm& time, const std::string& name) {
     print_time(time, false);
     std::cout << 11 << ' ' << name << '\n';
@@ -18,9 +13,12 @@ void id13(hh_mm& time, const std::string& error_msg) {
 }
 
 void id1(club_info& work_info, hh_mm& time, std::string& name) {
-    std::cout << work_info.current_str << '\n';
+    const auto find_name = [name](const auto queue) {
+        auto res = std::find(std::cbegin(queue), std::cend(queue), name);
+        return res != std::cend(queue);
+    };
 
-    if (find_some(work_info.queue_clients, name) || find_some(work_info.who_sits, name)) {
+    if (find_name(work_info.queue_clients) || find_name(work_info.who_sits)) {
         id13(time, "YouShallNotPass");
         return;
     }
@@ -37,8 +35,6 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
     const auto empty_table = [](const auto queue) {
         return std::find(std::cbegin(queue), std::cend(queue), "") != std::cend(queue);
     };
-
-    std::cout << work_info.current_str << '\n';
 
     if (empty_table(work_info.queue_clients)) {
         id13(time, "ICanWaitNoLonger");

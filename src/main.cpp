@@ -14,8 +14,6 @@ void id_analysis(club_info& work_info, hh_mm time, uint8_t id, std::string& name
         case (4): id4(); break;
         default: std::cout << "something go wrong"; exit(1);
     }
-
-
 }
 
 int main() {
@@ -38,6 +36,7 @@ int main() {
         std::istringstream p(work_info.current_str);
         std::vector<std::string> event(std::istream_iterator<std::string>{p}, std::istream_iterator<std::string>());
 
+        std::cout << work_info.current_str << '\n';
         id_analysis(work_info, parse_time(event[0], ':'), std::stoi(event[1]), event[2]);
     }
 

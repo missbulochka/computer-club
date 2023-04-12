@@ -26,7 +26,6 @@ struct club_info {
     std::vector<hh_mm> occupancy_table;
 };
 
-bool find_some(std::vector<std::string>&, std::string&);
 void id11(hh_mm&, const std::string&);
 void id13(hh_mm&, const std::string&);
 void id1(club_info&, hh_mm&, std::string&);
