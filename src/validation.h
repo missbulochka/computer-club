@@ -28,7 +28,7 @@ private:
     static bool only_alnum(const std::string&);
     static bool only_time(const hh_mm&);
 
-    void table_or_price_val();
+    void table_or_price_val(size_t);
     void time_val();
     void event_val(size_t&);
 };

@@ -34,9 +34,9 @@ void validation::start_val() {
             }
 
             switch (line_num) {
-                case (1): table_or_price_val(); break;
+                case (1): table_or_price_val(line_num); break;
                 case (2): time_val(); break;
-                case (3): table_or_price_val(); break;
+                case (3): table_or_price_val(line_num); break;
                 default: event_val(line_num);
             }
         }
@@ -47,11 +47,15 @@ void validation::start_val() {
     }
 }
 
-void validation::table_or_price_val() {
+void validation::table_or_price_val(size_t line_num) {
     if (!only_digit(current_str) || std::stol(current_str) == 0) {
         throw std::runtime_error("1");
     }
-    number_of_tables = std::stol(current_str, nullptr, 0);
+    if (line_num == 1) {
+        number_of_tables = std::stol(current_str, nullptr, 0);
+    } else {
+        price = std::stol(current_str, nullptr, 0);
+    }
 }
 
 void validation::time_val() {
