@@ -22,8 +22,8 @@ struct club_info {
     hh_mm end_time;
     uint32_t price;
 
-    std::vector<std::string> queue_clients;
     std::vector<std::string> all_clients;
+    std::vector<std::string> queue_clients;
     std::vector<std::string> who_sits;
     std::vector<hh_mm> occupancy_table;
     std::vector<std::pair<int, int>> duration;
