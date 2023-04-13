@@ -10,7 +10,7 @@ struct club_info {
         , start_time(val.get_start_time())
         , end_time(val.get_end_time())
         , price(val.get_price())
-        , current_str()
+        , all_clients()
         , queue_clients()
         , who_sits(number_of_tables, "")
         , occupancy_table(number_of_tables, {{}, {}})
@@ -22,8 +22,8 @@ struct club_info {
     hh_mm end_time;
     uint32_t price;
 
-    std::string current_str;
     std::vector<std::string> queue_clients;
+    std::vector<std::string> all_clients;
     std::vector<std::string> who_sits;
     std::vector<hh_mm> occupancy_table;
     std::vector<std::pair<int, int>> duration;

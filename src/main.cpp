@@ -51,19 +51,20 @@ int main() {
     club_info work_info(val);
     print_time(work_info.start_time, true);
 
-    for (size_t line_num = 1; getline(rep_file, work_info.current_str); ++line_num) {
+    std::string current_str{};
+    for (size_t line_num = 1; getline(rep_file, current_str); ++line_num) {
         if (line_num < 4) {
             continue;
         }
 
-        std::istringstream p(work_info.current_str);
+        std::istringstream p(current_str);
         std::vector<std::string> event(std::istream_iterator<std::string>{p}, std::istream_iterator<std::string>());
         if (event.size() < 4) {
             event.emplace_back("0");
         }
 
 
-        std::cout << work_info.current_str << '\n';
+        std::cout << current_str << '\n';
         id_analysis(work_info, parse_time(event[0], ':'), std::stoi(event[1]), event[2], std::stoi(event[3]));
     }
 
