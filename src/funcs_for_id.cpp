@@ -25,13 +25,13 @@ void count_to_arrive(club_info& work_info, hh_mm& time, size_t index) {
 void id11(club_info& work_info, hh_mm& time, std::string& name) {
     print_time(time, false);
     std::cout << 11 << ' ' << name << '\n';
-    work_info.all_clients.erase(std::find(std::cbegin(work_info.all_clients), std::cend(work_info.all_clients), name));
 
     if (find_name(work_info.who_sits, name)) {
         size_t index = std::distance(std::cbegin(work_info.who_sits),
                                      std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
         count_to_arrive(work_info, time, index);
     }
+    work_info.all_clients.erase(std::find(std::cbegin(work_info.all_clients), std::cend(work_info.all_clients), name));
 }
 
 void id12(club_info& work_info, hh_mm& time, size_t index) {
@@ -110,7 +110,9 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
         id11(work_info, time, name);
         return;
     }
-    work_info.queue_clients.push_back(name);
+    if (!find_name(work_info.queue_clients, name)) {
+        work_info.queue_clients.push_back(name);
+    }
 }
 
 void id4(club_info& work_info, hh_mm& time, std::string& name) {
@@ -136,8 +138,8 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
 void expel_clients_from_club(club_info& work_info) {
     if (!work_info.all_clients.empty()) {
         std::sort(work_info.all_clients.begin(), work_info.all_clients.end());
-        std::for_each(work_info.all_clients.begin(), work_info.all_clients.end(), [&work_info](std::string& name) {
-            id11(work_info, work_info.end_time, name);
-        });
+        while (!work_info.all_clients.empty()) {
+            id11(work_info, work_info.end_time, work_info.all_clients[0]);
+        }
     }
 }
