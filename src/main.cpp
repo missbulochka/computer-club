@@ -16,6 +16,26 @@ void id_analysis(club_info& work_info, hh_mm time, uint8_t id, std::string& name
     }
 }
 
+void print_revenue(club_info& work_info) {
+    for (int i = 0; i < work_info.number_of_tables; ++i) {
+        if (work_info.duration[i].second > 60) {
+            auto hours = work_info.duration[i].second % 60;
+            work_info.duration[i].first += hours;
+            work_info.duration[i].second -= hours * 60;
+        }
+
+        std::cout << i + 1 << ' ' << work_info.table_revenue[i] << ' ';
+        if (work_info.duration[i].first < 9) {
+            std::cout << '0';
+        }
+        std::cout << work_info.duration[i].first << ':';
+        if (work_info.duration[i].second < 10) {
+            std::cout << '0';
+        }
+        std::cout << work_info.duration[i].second << '\n';
+    }
+}
+
 int main() {
     std::string file = "../test_files/report_file_1.txt";
     validation val(file);
@@ -46,6 +66,7 @@ int main() {
 
     expel_clients_from_club(work_info);
     print_time(work_info.end_time, true);
+    print_revenue(work_info);
 
     return 0;
 }
