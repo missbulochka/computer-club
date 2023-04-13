@@ -24,15 +24,16 @@ void print_revenue(club_info& work_info) {
             work_info.duration[i].second -= hours * 60;
         }
 
+        hh_mm time = {{std::to_string(work_info.duration[i].first)}, {std::to_string(work_info.duration[i].second)}};
+        if (time.hours.size() < 2) {
+            time.hours.insert(0, "0");
+        }
+        if (time.minutes.size() < 2) {
+            time.minutes.insert(0, "0");
+        }
+
         std::cout << i + 1 << ' ' << work_info.table_revenue[i] << ' ';
-        if (work_info.duration[i].first < 9) {
-            std::cout << '0';
-        }
-        std::cout << work_info.duration[i].first << ':';
-        if (work_info.duration[i].second < 10) {
-            std::cout << '0';
-        }
-        std::cout << work_info.duration[i].second << '\n';
+        print_time(time, true);
     }
 }
 
