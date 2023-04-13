@@ -25,8 +25,7 @@ void id13(hh_mm& time, const std::string& error_msg) {
 
 void id1(club_info& work_info, hh_mm& time, std::string& name) {
     const auto find_name = [name](const auto queue) {
-        auto res = std::find(std::cbegin(queue), std::cend(queue), name);
-        return res != std::cend(queue);
+        return std::find(std::cbegin(queue), std::cend(queue), name) != std::cend(queue);
     };
 
     if (find_name(work_info.queue_clients) || find_name(work_info.who_sits)) {
@@ -41,6 +40,7 @@ void id1(club_info& work_info, hh_mm& time, std::string& name) {
     work_info.queue_clients.push_back(name);
 }
 
+// упростить лямбду и возвращать бул
 void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_num) {
     const auto find_name = [name](const auto queue) { return std::find(std::cbegin(queue), std::cend(queue), name); };
 
@@ -58,10 +58,12 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
         return;
     }
 
+    // из очереди выцепить ИНДЕКС имени и сажать
     work_info.queue_clients.erase(work_info.queue_clients.cbegin());
     work_info.who_sits[table_num - 1] = name;
 }
 
+// возвращать бул в лямбде
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
     const auto empty_table = std::find_if(std::cbegin(work_info.who_sits),
                                           std::cend(work_info.who_sits),
@@ -75,6 +77,7 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
     }
 }
 
+//упростить ретёрн лямбды
 void id4(club_info& work_info, hh_mm& time, std::string& name) {
     const auto find_name = [name](const auto queue) {
         auto res = std::find(std::cbegin(queue), std::cend(queue), name);
@@ -95,21 +98,31 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
 void expel_clients_from_club(club_info& work_info) {
     const auto isn_empty = [](const auto queue) {
         auto res =
-          std::find_if(std::cbegin(queue), std::cend(queue), [](const std::string& name) { return name.empty(); });
+          std::find_if(std::cbegin(queue), std::cend(queue), [](const std::string& name) { return !name.empty(); });
         return res != std::cend(queue);
     };
 
+    std::vector<std::string> clients_list{};
     if (isn_empty(work_info.queue_clients)) {
-        auto time = work_info.end_time;
-        for (size_t i = 0; i < work_info.queue_clients.size(); ++i) {
-            id11(work_info.end_time, work_info.queue_clients[0]);
+        while (!work_info.queue_clients.empty()) {
+            if (!work_info.queue_clients[0].empty()) {
+                clients_list.push_back(work_info.queue_clients[0]);
+            }
             work_info.queue_clients.erase(std::cbegin(work_info.queue_clients));
         }
     }
     if (isn_empty(work_info.who_sits)) {
-        for (size_t i = 0; i < work_info.who_sits.size(); ++i) {
-            id11(work_info.end_time, work_info.who_sits[i]);
+        while (!work_info.who_sits.empty()) {
+            if (!work_info.who_sits[0].empty()) {
+                clients_list.push_back(work_info.who_sits[0]);
+            }
             work_info.who_sits.erase(std::cbegin(work_info.who_sits));
         }
+    }
+    if (!clients_list.empty()) {
+        std::sort(clients_list.begin(), clients_list.end());
+        std::for_each(clients_list.begin(), clients_list.end(), [&work_info](const std::string& name) {
+            id11(work_info.end_time, name);
+        });
     }
 }
