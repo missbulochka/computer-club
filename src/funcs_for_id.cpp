@@ -6,9 +6,32 @@ bool find_name(const std::vector<std::string>& queue, std::string& name) {
     return std::find(std::cbegin(queue), std::cend(queue), name) != std::cend(queue);
 }
 
-void id11(hh_mm& time, const std::string& name) {
+void count_to_arrive(club_info& work_info, hh_mm& time, const std::string& name, size_t index) {
+    auto hours = std::stoi(time.hours) - std::stoi(work_info.occupancy_table[index].hours);
+    auto minutes = std::stoi(time.minutes) - std::stoi(work_info.occupancy_table[index].minutes);
+    if (minutes < 0) {
+        hours--;
+        minutes += 60;
+    }
+    work_info.duration[index].first += hours;
+    work_info.duration[index].second += minutes;
+    work_info.table_revenue[index] += hours * work_info.price;
+    if (minutes > 0) {
+        work_info.table_revenue[index] += work_info.price;
+    }
+    work_info.occupancy_table[index] = {{}, {}};
+}
+
+void id11(club_info& work_info, hh_mm& time, const std::string& name) {
     print_time(time, false);
     std::cout << 11 << ' ' << name << '\n';
+
+    if (std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name)
+        != std::cend(work_info.who_sits)) {
+        size_t index = std::distance(std::cbegin(work_info.who_sits),
+                                     std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
+        count_to_arrive(work_info, time, name, index);
+    }
 }
 
 void id12(club_info& work_info, hh_mm& time, size_t index) {
@@ -20,6 +43,7 @@ void id12(club_info& work_info, hh_mm& time, size_t index) {
     std::cout << 12 << ' ' << work_info.queue_clients[0] << ' ' << index + 1 << '\n';
     work_info.who_sits[index] = work_info.queue_clients[0];
     work_info.queue_clients.erase(work_info.queue_clients.cbegin());
+    work_info.occupancy_table[index] = time;
 }
 
 void id13(hh_mm& time, const std::string& error_msg) {
@@ -56,8 +80,12 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
         return;
     }
 
-    work_info.queue_clients.erase(std::find(work_info.queue_clients.cbegin(), work_info.queue_clients.cend(), name));
+    if (find_name(work_info.queue_clients, name)) {
+        work_info.queue_clients.erase(
+          std::find(work_info.queue_clients.cbegin(), work_info.queue_clients.cend(), name));
+    }
     work_info.who_sits[table_num - 1] = name;
+    work_info.occupancy_table[table_num - 1] = time;
 }
 
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
@@ -72,7 +100,7 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
         id13(time, "ICanWaitNoLonger!");
     }
     if (work_info.queue_clients.size() == work_info.number_of_tables) {
-        id11(time, name);
+        id11(work_info, time, name);
     }
 }
 
@@ -82,10 +110,16 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
         return;
     }
 
-    size_t index = std::distance(std::cbegin(work_info.who_sits),
-                                 std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
-    work_info.who_sits[index] = "";
-    id12(work_info, time, index);
+    if (find_name(work_info.who_sits, name)) {
+        size_t index = std::distance(std::cbegin(work_info.who_sits),
+                                     std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
+        work_info.who_sits[index] = "";
+        count_to_arrive(work_info, time, name, index);
+        id12(work_info, time, index);
+        return;
+    }
+    work_info.queue_clients.erase(
+      std::find(std::cbegin(work_info.queue_clients), std::cend(work_info.queue_clients), name));
 }
 
 void expel_clients_from_club(club_info& work_info) {
@@ -105,17 +139,16 @@ void expel_clients_from_club(club_info& work_info) {
         }
     }
     if (isn_empty(work_info.who_sits)) {
-        while (!work_info.who_sits.empty()) {
-            if (!work_info.who_sits[0].empty()) {
-                clients_list.push_back(work_info.who_sits[0]);
+        for (const auto& who_sit : work_info.who_sits) {
+            if (!who_sit.empty()) {
+                clients_list.push_back(who_sit);
             }
-            work_info.who_sits.erase(std::cbegin(work_info.who_sits));
         }
     }
     if (!clients_list.empty()) {
         std::sort(clients_list.begin(), clients_list.end());
         std::for_each(clients_list.begin(), clients_list.end(), [&work_info](const std::string& name) {
-            id11(work_info.end_time, name);
+            id11(work_info, work_info.end_time, name);
         });
     }
 }
