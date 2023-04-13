@@ -53,7 +53,8 @@ void validation::table_or_price_val(size_t line_num) {
     }
     if (line_num == 1) {
         number_of_tables = std::stol(current_str, nullptr, 0);
-    } else {
+    }
+    else {
         price = std::stol(current_str, nullptr, 0);
     }
 }
@@ -85,7 +86,7 @@ void validation::event_val(size_t& line_num) {
             throw std::runtime_error("1");
         }
 
-        if (std::stol(event[1]) > 4 || std::stol(event[1]) == 0) {
+        if (std::stol(event[1]) > 4 || std::stol(event[1]) == 0 || (std::stol(event[1]) == 2 && event.size() != 4)) {
             throw std::runtime_error("1");
         }
 
