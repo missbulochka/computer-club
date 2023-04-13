@@ -2,6 +2,10 @@
 #include <algorithm>
 #include "funcs_for_id.h"
 
+bool find_name(const std::vector<std::string>& queue, std::string& name) {
+    return std::find(std::cbegin(queue), std::cend(queue), name) != std::cend(queue);
+}
+
 void id11(hh_mm& time, const std::string& name) {
     print_time(time, false);
     std::cout << 11 << ' ' << name << '\n';
@@ -24,11 +28,7 @@ void id13(hh_mm& time, const std::string& error_msg) {
 }
 
 void id1(club_info& work_info, hh_mm& time, std::string& name) {
-    const auto find_name = [name](const auto queue) {
-        return std::find(std::cbegin(queue), std::cend(queue), name) != std::cend(queue);
-    };
-
-    if (find_name(work_info.queue_clients) || find_name(work_info.who_sits)) {
+    if (find_name(work_info.queue_clients, name) || find_name(work_info.who_sits, name)) {
         id13(time, "YouShallNotPass");
         return;
     }
@@ -40,15 +40,13 @@ void id1(club_info& work_info, hh_mm& time, std::string& name) {
     work_info.queue_clients.push_back(name);
 }
 
-// упростить лямбду и возвращать бул
 void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_num) {
-    const auto find_name = [name](const auto queue) { return std::find(std::cbegin(queue), std::cend(queue), name); };
-
-    if (find_name(work_info.who_sits) == std::cend(work_info.who_sits)) {
-        size_t index = std::distance(std::cbegin(work_info.who_sits), find_name(work_info.who_sits));
+    if (find_name(work_info.who_sits, name)) {
+        size_t index = std::distance(std::cbegin(work_info.who_sits),
+                                     std::find(work_info.who_sits.cbegin(), work_info.who_sits.cend(), name));
         work_info.who_sits[index] = "";
     }
-    if (find_name(work_info.queue_clients) == std::cend(work_info.queue_clients)) {
+    if (!find_name(work_info.queue_clients, name)) {
         id13(time, "ClientUnknown");
         return;
     }
@@ -58,18 +56,19 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
         return;
     }
 
-    // из очереди выцепить ИНДЕКС имени и сажать
-    work_info.queue_clients.erase(work_info.queue_clients.cbegin());
+    work_info.queue_clients.erase(std::find(work_info.queue_clients.cbegin(), work_info.queue_clients.cend(), name));
     work_info.who_sits[table_num - 1] = name;
 }
 
-// возвращать бул в лямбде
 void id3(club_info& work_info, hh_mm& time, std::string& name) {
-    const auto empty_table = std::find_if(std::cbegin(work_info.who_sits),
-                                          std::cend(work_info.who_sits),
-                                          [](const std::string& name) { return name.empty(); });
+    const auto empty_table = [&work_info]() {
+        auto res = std::find_if(std::cbegin(work_info.who_sits),
+                                std::cend(work_info.who_sits),
+                                [](const std::string& name) { return name.empty(); });
+        return res != std::cend(work_info.who_sits);
+    };
 
-    if (empty_table != std::cend(work_info.who_sits)) {
+    if (empty_table()) {
         id13(time, "ICanWaitNoLonger!");
     }
     if (work_info.queue_clients.size() == work_info.number_of_tables) {
@@ -77,20 +76,14 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
     }
 }
 
-//упростить ретёрн лямбды
 void id4(club_info& work_info, hh_mm& time, std::string& name) {
-    const auto find_name = [name](const auto queue) {
-        auto res = std::find(std::cbegin(queue), std::cend(queue), name);
-        return res != std::cend(queue);
-    };
-
-    if (!find_name(work_info.queue_clients) && !find_name(work_info.who_sits)) {
+    if (!find_name(work_info.queue_clients, name) && !find_name(work_info.who_sits, name)) {
         id13(time, "ClientUnknown");
         return;
     }
 
-    auto table = std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name);
-    size_t index = std::distance(std::cbegin(work_info.who_sits), table);
+    size_t index = std::distance(std::cbegin(work_info.who_sits),
+                                 std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
     work_info.who_sits[index] = "";
     id12(work_info, time, index);
 }
