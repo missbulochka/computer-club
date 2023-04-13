@@ -40,7 +40,7 @@ void print_revenue(club_info& work_info) {
 void id_analysis(uint8_t id) {}
 
 int main() {
-    std::string file = "../test_files/report_file_1.txt";
+    std::string file = "../test_files/report_file_1.txt";  // имя файла с входными данными
     validation val(file);
 
     std::ifstream rep_file(file);
