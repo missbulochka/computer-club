@@ -6,7 +6,7 @@ bool find_name(const std::vector<std::string>& queue, std::string& name) {
     return std::find(std::cbegin(queue), std::cend(queue), name) != std::cend(queue);
 }
 
-void count_to_arrive(club_info& work_info, hh_mm& time, const std::string& name, size_t index) {
+void count_to_arrive(club_info& work_info, hh_mm& time, size_t index) {
     auto hours = std::stoi(time.hours) - std::stoi(work_info.occupancy_table[index].hours);
     auto minutes = std::stoi(time.minutes) - std::stoi(work_info.occupancy_table[index].minutes);
     if (minutes < 0) {
@@ -29,7 +29,7 @@ void id11(club_info& work_info, hh_mm& time, std::string& name) {
     if (find_name(work_info.who_sits, name)) {
         size_t index = std::distance(std::cbegin(work_info.who_sits),
                                      std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
-        count_to_arrive(work_info, time, name, index);
+        count_to_arrive(work_info, time, index);
     }
 }
 
@@ -112,7 +112,7 @@ void id4(club_info& work_info, hh_mm& time, std::string& name) {
         size_t index = std::distance(std::cbegin(work_info.who_sits),
                                      std::find(std::cbegin(work_info.who_sits), std::cend(work_info.who_sits), name));
         work_info.who_sits[index] = "";
-        count_to_arrive(work_info, time, name, index);
+        count_to_arrive(work_info, time, index);
         id12(work_info, time, index);
         return;
     }

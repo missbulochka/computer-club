@@ -31,7 +31,7 @@ struct club_info {
 };
 
 bool find_name(const std::vector<std::string>&, const std::string&);
-void count_to_arrive(club_info&, hh_mm&, const std::string&, size_t);
+void count_to_arrive(club_info&, hh_mm&, size_t);
 void id11(club_info&, hh_mm&, std::string&);
 void id12(club_info&, hh_mm&, std::string&, size_t);
 void id13(hh_mm&, const std::string&);
