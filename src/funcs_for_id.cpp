@@ -103,6 +103,11 @@ void id3(club_info& work_info, hh_mm& time, std::string& name) {
         return res != std::cend(who_sits);
     };
 
+    if (!find_name(work_info.all_clients, name)) {
+        id13(time, "ClientUnknown");
+        return;
+    }
+
     if (empty_table(work_info.who_sits)) {
         id13(time, "ICanWaitNoLonger!");
         return;
