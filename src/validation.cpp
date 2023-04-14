@@ -116,7 +116,15 @@ bool validation::only_digit(const std::string& str) {
 
 bool validation::only_alnum(const std::string& str) {
     const auto find = std::find_if(std::cbegin(str), std::cend(str), [](const auto ch) {
-        return !(std::isalnum(ch) && std::islower(ch));
+        if (std::isalnum(ch)) {
+            if (std::isalpha(ch)) {
+                return !std::islower(ch);
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
     });
     return find == std::cend(str);
 }
