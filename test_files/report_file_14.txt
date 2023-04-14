@@ -1,0 +1,22 @@
+2
+10:00 15:00
+20
+10:00 1 jamal
+10:02 1 juk
+10:05 1 jamal
+10:15 2 jamal 1
+10:20 1 kitten
+10:20 2 juk 2
+10:25 3 kitten
+11:00 1 solo
+11:05 1 jabba
+11:06 3 solo
+11:30 4 jamal
+11:45 2 jabba 1
+11:45 3 jabba
+12:20 4 juk
+12:40 4 kitten
+13:00 1 client1
+13:20 2 client1 1
+13:25 4 solo
+13:30 3 client1

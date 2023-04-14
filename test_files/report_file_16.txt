@@ -1,0 +1,18 @@
+2
+10:00 13:00
+10
+10:13 1 jamal
+10:15 1 biba
+10:20 2 jamal 1
+10:30 1 juja
+10:35 2 juja 2
+10:40 3 biba
+10:45 2 jamal 1
+11:00 1 sigma
+11:10 3 sigma
+11:30 2 jamal 2
+11:31 4 juja
+11:32 2 jamal 2
+12:20 4 sigma
+12:25 4 biba
+12:30 2 jamal 2

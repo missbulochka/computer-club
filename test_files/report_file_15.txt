@@ -1,0 +1,19 @@
+3
+11:00 13:00
+10
+11:00 4 admin
+11:01 1 pedropascal
+11:10 2 pedropascal 1
+11:20 1 solo
+11:20 1 admin
+11:30 2 solo 2
+12:00 4 pedropascal
+12:10 1 r2
+12:12 3 r2
+12:12 1 boba
+12:13 2 r2 1
+12:14 1 biba
+12:15 2 admin 3
+12:30 3 boba
+12:45 1 monke
+12:46 3 biba
