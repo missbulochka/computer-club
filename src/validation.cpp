@@ -86,6 +86,10 @@ void validation::event_val(size_t& line_num) {
             throw std::runtime_error("1");
         }
 
+        if (!time_is_less_or_equal_then(time, end_time)) {
+            throw std::runtime_error("1");
+        }
+
         if (std::stol(event[1]) > 4 || std::stol(event[1]) == 0 || (std::stol(event[1]) == 2 && event.size() != 4)) {
             throw std::runtime_error("1");
         }
