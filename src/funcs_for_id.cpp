@@ -85,6 +85,7 @@ void id2(club_info& work_info, hh_mm& time, std::string& name, uint16_t table_nu
         size_t index = std::distance(std::cbegin(work_info.who_sits),
                                      std::find(work_info.who_sits.cbegin(), work_info.who_sits.cend(), name));
         work_info.who_sits[index] = "";
+        count_to_arrive(work_info, time, index);
     }
     if (find_name(work_info.queue_clients, name)) {
         work_info.queue_clients.erase(
